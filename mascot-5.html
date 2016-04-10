@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<head>
+<style>
+
+body{
+   background-color:black;
+   color:white;
+}
+
+#profileButton{
+   perspective:100rem;
+   height:2rem;
+   width:2rem;
+}
+
+
+#mascot{
+   width:100%;
+   height:100%;
+   perspective:5em;
+   transform-origin:50% 50% .5em;
+   transform:rotateY(0deg) rotateX(0deg);
+   transition:all 1s;
+   transition-timing-function:linear;
+   /*animation:breathe 3s ease-in infinite;*/
+}
+
+#mascot div{
+   transition:all .1s;
+   transition-timing-function:cubic-bezier(.85,.57,.93,1.26);
+}
+
+#mascotEyeContainer{
+   position:absolute;
+   top:.2em;
+}
+
+#mascotEyeRight,#mascotEyeLeft{
+   width:.8em;
+   height:.8em;
+   position:absolute;
+   border-radius:50%;
+
+   /*Responsible for eye opening and closing*/
+   /*Image can be used for different eye looks*/
+   background-image:url('http://wordpress.astro.de/wp-content/uploads/2015/03/White.jpg');
+   background-repeat:no-repeat;
+   background-position-x:50%;
+   /*animation:blink 10s linear infinite;*/
+}
+
+
+#mascotEyeRight{
+   left:.075em;
+}
+
+#mascotEyeLeft{
+   left: 1.115em;
+}
+
+#mascotMouth{
+   width:.8em;
+   height:.5em;
+   position:absolute;
+   top:1.2em;
+   left:.6em;
+   background-image:url('http://wordpress.astro.de/wp-content/uploads/2015/03/White.jpg');
+   background-repeat:no-repeat;
+   /*animation:breathemouth 3s ease-in infinite;*/
+}
+
+
+@keyframes blink{
+   0%{background-size:100% auto;}
+   .1%{background-size:100% 1px;}
+   .2%{background-size:100% 1px;}
+   .4%{background-size:100% auto;}
+}
+
+@keyframes breatheall{
+   0%{transform:rotateX(0deg) rotateY(0deg);}
+   40%{transform:rotateX(40deg) rotateY(0deg);}
+   75%{transform:rotateX(40deg) rotateY(0deg);}
+   100%{transform:rotateX(0deg) rotateY(0deg);}
+}
+
+@keyframes breathemouth{
+   0%{transform:scale(1,1); border-radius:0 0 50% 50%;}
+   40%{transform:scale(.75,.5); border-radius:50%;}
+   50%{transform:scale(.75,.25); border-radius:0 0 50%;}
+   75%{transform:scale(.75,.25); border-radius:0 0 50%;}
+   100%{transform:scale(1,1); border-radius:0 0 50% 50%;}
+}
+
+</style>
+
+
+</head>
+
+
+<body>
+
+   <h1>Mascot!!!</h1>
+
+
+<!-- On context menu say fun things (story facts, things about Josh, funny little quotes- "WHy do you keep touching me?" -->
+   <div id="profileButton">
+      <div id="mascot">
+         <div id="mascotEyeContainer">
+            <div id="mascotEyeRight"></div>
+            <div id="mascotEyeLeft"></div>
+         </div>
+         
+         <div id="mascotMouth"></div>
+      </div>
+   </div>
+
+<script>
+   
+   m=document.getElementById("mascot");
+   mE=document.getElementById("mascotEyeContainer");
+   mER=document.getElementById("mascotEyeRight");
+   mEL=document.getElementById("mascotEyeLeft");
+   mM=document.getElementById("mascotMouth");
+
+
+   //this function takes in objects that define the final positions for each of the elements of the mascot.
+   function animateHead(facing,leftEye,rightEye,mouth,time){
+      
+      //use time later
+      
+      //Whole mascot; affects facing direciton
+      m.style.transform="rotateX("+facing.rX+"deg) rotateY("+facing.rY+"deg)";
+      
+      //Right eye
+      mEL.style.backgroundSize="100% "+rightEye.bS;
+      mEL.style.backgroundPositionY=rightEye.bPY;
+      mEL.style.transform="scale("+rightEye.sX+","+rightEye.sY+") rotateZ("+rightEye.r+"deg)";
+
+      //Left eye
+      mER.style.backgroundSize="100% "+leftEye.bS;
+      mER.style.backgroundPositionY=leftEye.bPY;
+      mER.style.transform="scale("+leftEye.sX+","+leftEye.sY+") rotateZ("+leftEye.r+"deg)";
+   
+      //Mouth
+      mM.style.borderRadius=mouth.bRTL+" "+mouth.bRTR+" "+mouth.bRBR+" "+mouth.bRBL;
+      mM.style.backgroundSize="100% "+mouth.bS;
+      mM.style.backgroundPositionY=mouth.bPY;
+      mM.style.transform="scale("+mouth.sX+","+mouth.sY+")";
+   }
+   
+   
+   //Examples
+   function test(input){
+      
+      switch(input){
+         case 0: //Smile
+            animateHead(
+               {rX:'0',rY:'0'} //Facing
+               ,{bS:'100%',bPY:'50%',sX:'1',sY:'1',r:'0'} //Right eye
+               ,{bS:'100%',bPY:'50%',sX:'1',sY:'1',r:'0'} //Left eye
+               ,{ /////////Mouth
+                  bRTL:'0%',bRTR:'0%',bRBR:'50%',bRBL:'50%' //Border radii
+                  ,bS:'100%'
+                  ,bPX:'50%',bPY:'50%'
+                  ,sX:'1',sY:'1'}
+               ,'5' //Time
+            );
+         break;
+         case 1: //Annoyed
+            animateHead(
+               {rX:'0',rY:'-35'} //Facing
+               ,{bS:'50%',bPY:'100%',sX:'1',sY:'1',r:'0'} //Right eye
+               ,{bS:'50%',bPY:'100%',sX:'1',sY:'1',r:'0'} //Left eye
+               ,{bRTL:'50%',bRTR:'50%',bRBR:'0%',bRBL:'0%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'1'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 2: //Angry
+            animateHead(
+               {rX:'-35',rY:'0'} //Facing
+               ,{bS:'50%',bPY:'100%',sX:'1',sY:'1',r:'45'} //Right eye
+               ,{bS:'50%',bPY:'100%',sX:'1',sY:'1',r:'-45'} //Left eye
+               ,{bRTL:'50%',bRTR:'50%',bRBR:'0%',bRBL:'0%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'1'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 3: //Thinking
+            animateHead(
+               {rX:'25',rY:'-20'} //Facing
+               ,{bS:'25%',bPY:'50%',sX:'1',sY:'1',r:'0'} //Right eye
+               ,{bS:'25%',bPY:'50%',sX:'1',sY:'1',r:'0'} //Left eye
+               ,{bRTL:'0%',bRTR:'0%',bRBR:'0%',bRBL:'0%',bS:'10%',bPX:'10%',bPY:'10%',sX:'1',sY:'1'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 4: //Sad
+            animateHead(
+               {rX:'32',rY:'0'} //Facing
+               ,{bS:'75%',bPY:'100%',sX:'1',sY:'1',r:'-40'} //Right eye
+               ,{bS:'75%',bPY:'100%',sX:'1',sY:'1',r:'40'} //Left eye
+               ,{bRTL:'50%',bRTR:'50%',bRBR:'0%',bRBL:'0%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'.25'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 5: //Scared
+            animateHead(
+               {rX:'0',rY:'0'} //Facing
+               ,{bS:'100%',bPY:'100%',sX:'.25',sY:'.25',r:'0'} //Right eye
+               ,{bS:'100%',bPY:'100%',sX:'.25',sY:'.25',r:'0'} //Left eye
+               ,{bRTL:'0%',bRTR:'0%',bRBR:'0%',bRBL:'0%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'1'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 6: //Wink
+            animateHead(
+               {rX:'10',rY:'20'} //Facing
+               ,{bS:'90%',bPY:'0%',sX:'1',sY:'1',r:'0'} //Right eye
+               ,{bS:'1px',bPY:'50%',sX:'1',sY:'1',r:'0'} //Left eye
+               ,{bRTL:'0%',bRTR:'0%',bRBR:'50%',bRBL:'50%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'1'} //mouth
+               ,'5' //Time
+            );
+         break;
+         case 7: //Laughing
+            animateHead(
+               {rX:'-10',rY:'0'} //Facing
+               ,{bS:'50%',bPY:'0%',sX:'1',sY:'1',r:'-15'} //Right eye
+               ,{bS:'50%',bPY:'0%',sX:'1',sY:'1',r:'15'} //Left eye
+               ,{bRTL:'0%',bRTR:'0%',bRBR:'50%',bRBL:'50%',bS:'100%',bPX:'50%',bPY:'50%',sX:'1',sY:'1.5'} //mouth
+               ,'5' //Time
+            );
+         break;
+         default:
+      }
+   }
+   
+   
+   //Test all of the animations in a loop
+   testLoop=window.setInterval(animationLoop,1500);
+   animationLoop=0;
+   test(animationLoop);
+
+   function animationLoop(){
+      animationLoop++;
+      if(animationLoop>7){
+         animationLoop=0;
+      }
+      test(animationLoop);
+   }
+
+//animationTimeline([{face:{rX:{value:'5',relative:true}},time:0}]);
+
+   function animationTimeline(animationInput){
+      //Set up timeouts based on the timeline
+      for(i=0;i<animationInput.length;i++){
+         createAnimationTimeout(animationInput[i]);
+      }
+   }
+   
+   
+   function createAnimationTimeout(thisAnimation){
+      window.setTimeout(function(){
+         console.log(thisAnimation);
+   
+         for(i=0;i<Object.keys(thisAnimation).length-1;i++){
+            
+            console.log("For loop go!",thisAnimation[Object.keys(thisAnimation)[i]]);
+            
+            switch(Object.keys(thisAnimation)[i]){
+            case 'rightEye':
+               affectObject=mER;
+               break;
+            case 'leftEye':
+               affectObject=mEL;
+               break;
+            case 'mouth':
+               affectObject=mM;
+               break;
+            default: //Face (all)
+               affectObject=m;
+            }
+            
+            console.log("affectObject is",affectObject,"Data calls for",Object.keys(thisAnimation)[i]);
+            
+            //Information for each of the transformation calls
+            
+            transformData=[
+               {inputName:'sX',value:1,outputName:'scaleX'}
+               ,{inputName:'sY',value:1,outputName:'scaleY'}
+               ,{inputName:'rX',value:0,outputName:'rotateX'}
+               ,{inputName:'rY',value:0,outputName:'rotateY'}
+               ,{inputName:'rZ',value:0,outputName:'rotateZ'}
+            ];
+            
+            //Run a for loop to check for data in each of these areas
+            for(ii=0;ii<transformData.length;ii++){
+               
+               console.log("t1",thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName]);
+               
+               console.log("t2",affectObject.style.transform);
+               
+               //Check that we can get an existing value for this.
+               if(
+                  (!thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName] //if animation data for this doesn't exist
+                  || thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName]=="" //if animatino data for this is empty
+                  || thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName].relative==true) //If this animation does exist but is set to be relative
+                  && affectObject.style.transform //If the affected object has transformation data
+                  && affectObject.style.transform.indexOf(transformData[ii].outputName)>-1 //And the transformation data includes this variable
+               ){
+                  
+                     console.log("Getting current value for ");
+                     transformData[ii].value=Number(affectObject.style.transform.split((transformData[ii].outputName)+"(")[1].split(")")[0].replace("deg",""));
+                     console.log("Getting original value",transformData[ii],Number(affectObject.style.transform.split((transformData[ii].outputName)+"(")[1].split(")")[0].replace("deg","")));
+                  }
+                  
+                  //If animation data was passed:
+                  if(thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName]){
+                     
+                     if((transformData[ii].inputName=='sX' || transformData[ii].inputName=='sY') && thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName].relative==false){
+                        transformData[ii].value=0;
+                     }
+                     
+                     transformData[ii].value+=Number(thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName].value);
+                     console.log(Number(thisAnimation[Object.keys(thisAnimation)[i]][transformData[ii].inputName].value));
+                  }
+                  
+                  console.log(transformData);
+                  
+            }
+            
+            affectObject.style.transform="scaleX("+transformData[0].value+") scaleY("+transformData[1].value+") rotateX("+transformData[2].value+"deg) rotateY("+transformData[3].value+"deg) rotateZ("+transformData[4].value+"deg)";
+            
+            
+            //Background Size
+            bS='100%';
+            
+            if(
+               (!thisAnimation[Object.keys(thisAnimation)[i]].bS //if animation data for this doesn't exist
+               || thisAnimation[Object.keys(thisAnimation)[i]].bS=="" //if animatino data for this is empty
+               || thisAnimation[Object.keys(thisAnimation)[i]].bS.relative==true) //If this animation does exist but is set to be relative
+               && affectObject.style.backgroundSize //If the affected object has transformation data
+            ){
+               bS=affectObject.style.backgroundSize.split(" ")[1];
+            }
+         
+            if(thisAnimation[Object.keys(thisAnimation)[i]].bS){
+               
+               if(thisAnimation[Object.keys(thisAnimation)[i]].bS.relative==false){
+                  bS='0';
+               };
+               
+               bSAdd=thisAnimation[Object.keys(thisAnimation)[i]].bS.value;
+               
+               bSBuild='';
+               
+               //Add the two numbers together; then add the suffix
+               bSBuild+=Number(bS.replace(/\D/g,"")) //Get the first value (0 or relative)
+                  +Number(bSAdd.replace(/\D/g,"")) //Add the new value
+                  +(bSAdd.replace(/\d/g,"")); //And add the suffix the user's chosen
+                  
+               bS=bSBuild;
+               
+               console.log("bS and add and build",bSAdd,bSBuild,bS);
+            }
+         
+            console.log("bS",bS);
+         
+            affectObject.style.backgroundSize="100% "+bS;
+            
+            //Background Position Y
+            bPY='50%';
+            
+            if(
+               (!thisAnimation[Object.keys(thisAnimation)[i]].bPY //if animation data for this doesn't exist
+               || thisAnimation[Object.keys(thisAnimation)[i]].bPY=="" //if animatino data for this is empty
+               || thisAnimation[Object.keys(thisAnimation)[i]].bPY.relative==true) //If this animation does exist but is set to be relative
+               && affectObject.style.backgroundPositionY //If the affected object has background position y data
+            ){
+               bPY=affectObject.style.backgroundPositionY;
+            }
+            
+            if(thisAnimation[Object.keys(thisAnimation)[i]].bPY){
+               
+               if(thisAnimation[Object.keys(thisAnimation)[i]].bPY.relative==false){
+                  bPY='0';
+               };
+               
+               bPYAdd=thisAnimation[Object.keys(thisAnimation)[i]].bPY.value;
+               
+               bPYBuild='';
+               
+               //Add the two numbers together; then add the suffix
+               bPYBuild+=Number(bPY.replace(/\D/g,"")) //Get the first value (0 or relative)
+                  +Number(bPYAdd.replace(/\D/g,"")) //Add the new value
+                  +(bPYAdd.replace(/\d/g,"")); //And add the suffix the user's chosen
+                  
+               bPY=bPYBuild;
+            }
+            
+            affectObject.style.backgroundPositionY=bPY;
+            
+            //Border Radius
+            
+            bR='50% 50% 50% 50%';
+            
+            if(
+               (!thisAnimation[Object.keys(thisAnimation)[i]].bR //if animation data for this doesn't exist
+               || thisAnimation[Object.keys(thisAnimation)[i]].bR=="" //if animation data for this is empty
+               || thisAnimation[Object.keys(thisAnimation)[i]].bR.relative==true) //If this animation does exist but is set to be relative
+               && affectObject.style.borderRadius //If the affected object has border radius data
+            ){
+               bR=affectObject.style.borderRadius;
+            }
+         
+            if(thisAnimation[Object.keys(thisAnimation)[i]].bR){
+               
+               if(thisAnimation[Object.keys(thisAnimation)[i]].bR.relative==false){
+                  bR='0% 0% 0% 0%';
+               };
+
+               bRAdd=thisAnimation[Object.keys(thisAnimation)[i]].bR.value;
+               
+               bRBuild='';
+
+               //Add the four numbers together
+               for(ii=0;ii<4;ii++){
+                  //Add the two numbers together; then add the suffix
+                  bRBuild+=Number(bR.split(" ")[ii].replace(/\D/g,"")) //Get the first value (0 or relative)
+                     +Number(bRAdd.split(" ")[ii].replace(/\D/g,"")) //Add the new value
+                     +(bRAdd.split(" ")[ii].replace(/\d/g,"")); //And add the suffix the user's chosen
+                  //If it isn't the last number, add a space too
+                  if(i<3){bRBuild+=" ";}
+               }
+
+               bR=bRBuild;
+               
+               console.log("bR and building",bR,bRAdd,bRBuild);
+
+            }
+
+            console.log("bR",bR);
+            
+            affectObject.style.borderRadius=bR;
+
+
+
+         }
+            
+         },thisAnimation.time);
+      
+   }
+   
+   ////ANIMATION SETS
+   
+   //Animation sets are an array of objects. These objects explain the keyframes at existing times.
+   //Each of the keyframe objects contains instance objects that describe the part of the character we'll be animating in this keyframe.
+   //And each character part under each keyframe has objects explaining the animation that will be done.
+   
+   ////HOW IT WORKS
+   
+   //Transitions are set on the objects we'll be affecting. This animation toolset just changes the value to the desired end point, and CSS3 automatically animates between these points for us.
+   //This toolset works with a timeline, so we can have anything we want to happen happen at any time.
+   
+   /////SETUP
+   
+   ////Character objects
+   //m: main; the whole face
+   //leftEye: the left eye (his left, not ours)
+   //rightEye: the right eye (his right, not ours)
+   //mouth: the mouth
+   
+   ////Values to animation
+   //sX: scale x, or scaleX. 0 is flattened, 1 is normal size.
+   //sY: scale y, or scaleY.
+   //rX: rotation x, or rotateX. Pass along a number, which will be read as degrees.
+   //rY: rotation y, or rotateY.
+   //rZ: rotation z, or rotateZ.
+   //bR: border radius, made up of four numbers: 'top-left top-right bottom-right bottom-left'
+   //bS: background size. Used for opening and closing the eyes and mouth. You only affect the Y size. Put in a percentage or regular value.
+   //bPY: background position y. Used to move the eyes and mouth up and down.
+   
+   ////Relative values
+   //You can set relative to true for any animation and it will add onto the previous style value instead of overwriting it. For the default function of overwriting, just set relative to false.
+   
+   ////Time
+   //Time is kept in millilseconds. This is milliseconds from the start of the animation, not milliseconds relative to the previous frame.
+   
+   ////Syntax
+   sampleAnimation=[ //First we open our array
+      { //We've just opened a keyframe.
+         mouth:{ //We call an object to animate it.
+            sX:{ //Then we choose what values to animate. In this case, we're scaling x.
+               value:.5 //We're setting scale x to .5
+               ,relative:false //We'll set the value to .5, not add .5 to it
+            } //Value and Relative are the only two values for instances, and they must always be defined
+         } //That's all we want to do with the mouth.
+         //See if you can understand most of the next one without help.
+         ,rightEye:{
+            bS:{ //Background Y scale
+               value:'50%' //Because this value is more than just a number, we have to pass it as a string.
+               //Background scale lets the character blink convincingly. You could also use sY (scale Y), but then his eyelids look overly round and it's kind of weird. Compare the two and you'll see what I mean.
+               ,relative:false
+            }
+            ,bP:{ //Background position
+               value:'100%' //This puts his eye at the bottom half of his eye-space, which means that it looks like his eyelid's half closed, like he's bored or unimpress or something.
+               ,relative:false
+            }
+         }
+         //You have to input the right and left eyes separately. Just copy and paste from the right eye if they'll be doing the same thing.
+         ,leftEye:{
+            bS:{ //Background Y scale
+               value:'50%'
+               ,relative:false
+            }
+            ,bP:{ //Background position
+               value:'100%'
+               ,relative:false
+            }
+         }
+         ,time:2000 //Now to close this keyframe info, we add how many seconds we want it to take to meet this keyframe! In this case, 2 seconds (2000 milliseconds)
+      }
+      ,{ //Let's start another keyframe:
+         m:{//The main object. The face. Actually, you can type anything here and it'll call the face; "ubugubudub" would work too.
+            rX:{ //rotateX. This correlates with regular rotate, actually, but we're using rotateX
+               value:45 //We don't have to specify degrees here
+               ,relative:true //Why would we want to use relative? Let's say that we want the guy to nod, even if he's proud and his chin's held a little high. With relative, we don't have to create a separate nod animation for when his head is held high and when he's facing straight ahead like normal!
+               //Another great example is if you have the character spin around a ton. If you spun around 360 degrees, and then wanted him resume as normal, you'd run into problems without relative because when you set his rotation to -10 degrees, he wouldn't just turn a little to the left- he'd turn around -370 degrees to make it back! With relative, you don't have to "undo" big animations like that.
+            }
+            ,rX:{//Rotate X. Rotate X tilts the head up and down. Rotate Y is, on the other hand, for shaking/turning the head sideways.
+               value:20
+               ,relative:true
+            }
+         }
+         ,time:3000 //Make sure that this keyframe happens after the earlier ones! You'll actually still get a working animation if your keyframes are out of order, but you might be surprised at the results.
+      }
+   ]; //There, we've made our animation!
+   
+   //Now we can just pass it into the "animationTimeline" function like this:
+   //animationTimeline(sampleAnimation);
+   //And the animation will play!
+   
+   ////Recommended values for each part
+   //Whole: rX, rY, rZ
+   //leftEye/rightEye: sX, sY, rX, bS, bPY
+   //mouth: sX, sY, bR, bS, bPY
+   
+   //Relative allows talking about other animations to not be expression-dependent
+   animationSet=[
+      {
+         m:{
+            rY:{value:-40,relative:false}
+         }
+         ,leftEye:{
+            bS:{value:'50%',relative:false}
+            ,bPY:{value:'50%',relative:false}
+         }
+         ,rightEye:{
+            bS:{value:'75%',relative:false}
+            ,bPY:{value:'50%',relative:false}
+         }
+         ,mouth:{
+            bR:{value:'50% 50% 0% 0%',relative:false}
+            //It looks like relative false isn't working
+         }
+         ,time:1000}
+      ,{
+         m:{}
+         ,mouth:{
+      //bR:{value:'0 0 50% 50%',relative:false}
+         }
+
+         ,time:2000}
+   ];
+   
+   talkingHappily=[
+      {
+         mouth:{
+            bR:{value:'0 0 50% 50%',relative:false}
+            ,bS:{value:'100%',relative:false}
+            ,bPY:{value:'50%',relative:false}
+         }
+      ,time:500}
+      ,      {
+         mouth:{
+            bS:{value:'1px',relative:false}
+            ,bPY:{value:'20%',relative:false}
+         }
+      ,time:600}
+      ,      {
+         mouth:{
+            bS:{value:'80%',relative:false}
+            ,bPY:{value:'60%',relative:false}
+         }
+      ,time:750}
+      ,      {
+         mouth:{
+            bS:{value:'100%',relative:false}
+            ,bPY:{value:'65%',relative:false}
+            ,bR:{value:'50% 50% 50% 50%',relative:false}
+            ,sX:{value:'.25',relative:false}
+            ,sY:{value:'.25',relative:false}
+         }
+      ,time:900}
+      ,      {
+         mouth:{
+            bS:{value:'90%',relative:false}
+            ,bPY:{value:'50%',relative:false}
+            ,bR:{value:'0% 0% 50% 50%',relative:false}
+            ,sX:{value:'1',relative:false}
+            ,sY:{value:'1',relative:false}
+         }
+      ,time:1100}
+      ,{
+         
+         mouth:{
+            
+         }
+         
+      ,time:1200}
+      
+      
+   ];
+   
+   //Random Value
+   function rV(inputNum){
+      return Math.round(Math.random()*inputNum);
+   }
+   
+   //Build a random object for mouth animation
+   function randomMouth(){
+   /*
+      return bS:{value:rV(100)+'%',relative:false}
+            ,bPY:{value:rV(100)+'%',relative:false}
+            ,bR:{value:'50% 50% 50% 50%',relative:false}
+            ,sX:{value:100-(rV(75)/100),relative:false}
+            ,sY:{value:100-(rV(75)/100),relative:false};
+*/
+   }
+
+</script>
+
+</body>
